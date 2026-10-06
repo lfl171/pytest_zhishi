@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fc">
+  <meta name="description" content="pytest 中文实战指南：断言、Fixture、参数化、标记、命令行与团队实践。">
+  <title>pytest 入门与实践 · 从第一个测试到可维护的测试体系</title>
+  <style>
+    :root{--ink:#19243a;--muted:#65718a;--line:#e4e8f0;--paper:#fff;--wash:#f5f7fb;--blue:#4169e1;--teal:#18a999;--code:#111a2d;--shadow:0 14px 45px rgba(31,47,79,.08)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:26px}body{margin:0;background:var(--wash);color:var(--ink);font-family:Inter,"Segoe UI","Microsoft YaHei",system-ui,sans-serif;line-height:1.8}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+    .hero{position:relative;overflow:hidden;background:linear-gradient(128deg,#131d37 0%,#21375f 62%,#245e72 100%);color:#fff;padding:76px max(24px,calc((100% - 1180px)/2)) 68px}.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;pointer-events:none}.hero:before{width:520px;height:520px;right:-100px;top:-280px;border:1px solid rgba(255,255,255,.14);box-shadow:0 0 0 50px rgba(255,255,255,.035),0 0 0 100px rgba(255,255,255,.025)}.hero:after{width:260px;height:260px;right:18%;bottom:-220px;background:rgba(24,169,153,.24);filter:blur(20px)}.hero-inner{position:relative;z-index:1;max-width:1180px;margin:auto}.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:#a8c7ff;font-weight:750}.eyebrow:before{content:"";width:22px;height:2px;background:#48c9b4}.hero h1{max-width:850px;margin:18px 0 14px;font-size:clamp(2.35rem,5vw,4.2rem);line-height:1.14;letter-spacing:-.045em}.hero p{max-width:760px;color:#d0daea;font-size:1.1rem;margin:0}.hero-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.pill{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);border-radius:99px;padding:5px 12px;font-size:.82rem;color:#e5ecf7}
+    .layout{max-width:1180px;margin:40px auto 80px;padding:0 24px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:28px;align-items:start}.toc{position:sticky;top:22px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:19px 17px;box-shadow:var(--shadow)}.toc h2{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:#8b95a8;margin:0 0 10px}.toc a{display:block;color:#56627a;font-size:.84rem;padding:5px 9px;border-radius:7px;line-height:1.45}.toc a:hover,.toc a.active{background:#eef2ff;color:#3659c8;text-decoration:none}
+    .article{min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:19px;box-shadow:var(--shadow);padding:clamp(24px,5vw,58px)}.article section{padding-top:8px;margin-top:34px}.article section:first-child{margin-top:0}.article h2{display:flex;align-items:center;gap:12px;font-size:1.58rem;line-height:1.35;margin:0 0 16px;letter-spacing:-.025em}.article h2 .num{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border-radius:11px;background:#edf1ff;color:#4566cf;font-size:.9rem}.article h3{font-size:1.13rem;margin:24px 0 10px}.article p{margin:10px 0;color:#36435b}.article li{margin:.38em 0;color:#36435b}.article ul,.article ol{padding-left:1.35em}.lead{font-size:1.04rem;color:#42506a!important}.callout{margin:18px 0;padding:15px 18px;border:1px solid #dce9e8;border-left:4px solid var(--teal);border-radius:10px;background:#f2fbf9;color:#325b5a}
+    .feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}.feature{padding:16px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(145deg,#fff,#fafbff)}.feature b{display:block;color:#263755;margin-bottom:4px}.feature span{font-size:.91rem;color:var(--muted)}pre{overflow:auto;background:var(--code);color:#e8eefb;border-radius:12px;padding:18px 20px;margin:14px 0;font:.88rem/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;box-shadow:inset 0 1px rgba(255,255,255,.06)}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}p code,li code,td code{background:#f0f2f8;border:1px solid #e6e9f1;border-radius:5px;padding:1px 5px;color:#42537b;font-size:.9em}pre code{background:none;border:0;padding:0;color:inherit}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;margin:15px 0}table{width:100%;border-collapse:collapse;font-size:.91rem}th,td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f5f7fb;color:#34415a;font-weight:700}tr:last-child td{border-bottom:0}.steps{counter-reset:step;list-style:none;padding:0!important}.steps li{counter-increment:step;position:relative;padding-left:42px;margin:12px 0}.steps li:before{content:counter(step);position:absolute;left:0;top:0;display:grid;place-items:center;width:27px;height:27px;border-radius:9px;background:#e9f8f5;color:#168c80;font-weight:750;font-size:.82rem}.sources{padding-top:20px;border-top:1px solid var(--line);margin-top:30px}.sources li{font-size:.91rem}.footer{text-align:center;color:#8791a4;font-size:.84rem;padding:0 20px 34px}.backtop{display:inline-block;margin-top:10px;font-weight:650}.tag{display:inline-block;border-radius:99px;background:#f1edff;color:#6a50c5;padding:2px 9px;font-size:.78rem;font-weight:700}
+    @media(max-width:900px){.layout{grid-template-columns:1fr;margin-top:22px}.toc{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 8px}.toc h2{grid-column:1/-1}.toc a{font-size:.8rem}.hero{padding-top:58px;padding-bottom:50px}}
+    @media(max-width:560px){.layout{padding:0 12px}.article{padding:23px 18px}.toc{grid-template-columns:1fr 1fr;padding:14px 11px}.hero{padding:44px 20px 42px}.hero h1{font-size:2.35rem}.feature-grid{grid-template-columns:1fr}.article h2{font-size:1.35rem}}
+    @media print{body{background:#fff}.hero{background:#fff;color:#111;padding:20px 0}.hero p,.pill,.eyebrow{color:#444}.hero:before,.hero:after,.toc,.footer{display:none}.layout{display:block;margin:0;padding:0}.article{box-shadow:none;border:0;padding:0}.article section{break-inside:avoid}pre{white-space:pre-wrap;background:#f3f4f7;color:#111;box-shadow:none}a{color:#111}}
+  </style>
+</head>
+<body>
+  <header class="hero" id="top"><div class="hero-inner">
+    <div class="eyebrow">Python Testing · Field Guide</div>
+    <h1>pytest 入门与实践</h1>
+    <p>从第一个测试，到一套清晰、可靠、可维护的自动化测试体系。</p>
+    <div class="hero-meta"><span class="pill">测试工程实践</span><span class="pill">Python 3.10+</span><span class="pill">约 15 分钟</span></div>
+  </div></header>
+  <div class="layout">
+    <nav class="toc" aria-label="文章目录">
+      <h2>Contents · 目录</h2>
+      <a href="#s1">01　pytest 是什么</a><a href="#s2">02　安装与第一个测试</a>
+      <a href="#s3">03　测试发现与命名</a><a href="#s4">04　assert 与失败信息</a>
+      <a href="#s5">05　Fixture</a><a href="#s6">06　参数化</a>
+      <a href="#s7">07　Marker</a><a href="#s8">08　内置能力</a>
+      <a href="#s9">09　配置与命令行</a><a href="#s10">10　项目实践</a>
+      <a href="#s11">11　常见问题</a><a href="#s12">12　小结与资料</a>
+    </nav>
+    <main class="article">
+      <section id="s1"><h2><span class="num">01</span>pytest 是什么</h2>
+        <p class="lead">pytest 是 Python 生态中广泛使用的测试框架。它适用于从小型单元测试到集成测试的多种场景，也能运行许多基于 <code>unittest</code> 的现有测试。</p>
+        <div class="feature-grid"><div class="feature"><b>低门槛</b><span>普通函数配合原生 <code>assert</code> 就能表达预期。</span></div><div class="feature"><b>清晰的失败诊断</b><span>自动展示断言表达式中的实际值，减少定位时间。</span></div><div class="feature"><b>Fixture 机制</b><span>复用数据与资源准备逻辑，并管理生命周期和清理。</span></div><div class="feature"><b>灵活扩展</b><span>参数化、标记与插件适应不同规模的项目。</span></div></div>
+        <div class="callout">框架提供测试运行与组织能力，不会自动判断需求是否覆盖充分。测试质量仍取决于清晰的预期、有效的边界分析和可靠的测试数据。</div>
+      </section>
+      <section id="s2"><h2><span class="num">02</span>安装与第一个测试</h2>
+        <p>推荐在项目虚拟环境中安装，避免依赖污染系统 Python：</p>
+        <pre><code>python -m venv .venv
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+# macOS / Linux: source .venv/bin/activate
+python -m pip install pytest</code></pre>
+        <p>创建 <code>test_calculator.py</code>，写下一个普通函数测试：</p>
+        <pre><code>def add(a: int, b: int) -&gt; int:
+    return a + b
+
+
+def test_add_two_positive_numbers():
+    assert add(2, 3) == 5</code></pre>
+        <p>从项目根目录运行：</p><pre><code>python -m pytest</code></pre>
+        <p>成功时通常会看到 <code>1 passed</code>。使用 <code>python -m pytest</code> 可明确通过当前 Python 环境执行模块；也可直接使用 <code>pytest</code> 命令。</p>
+      </section>
+      <section id="s3"><h2><span class="num">03</span>测试发现与命名</h2>
+        <p>pytest 默认递归查找遵循约定的测试文件、类和函数：</p>
+        <ul><li>文件名通常是 <code>test_*.py</code> 或 <code>*_test.py</code>。</li><li>函数名以 <code>test_</code> 开头。</li><li>测试类以 <code>Test</code> 开头，且通常不定义 <code>__init__</code>。</li><li>类中的测试方法以 <code>test_</code> 开头。</li></ul>
+        <pre><code>pytest --collect-only
+pytest tests/test_user.py
+pytest tests/test_user.py::TestUser::test_create_user</code></pre>
+        <p>第一条命令只检查收集结果；后两条分别运行指定文件和节点。函数名应描述行为与场景，例如 <code>test_rejects_expired_token</code>，而不是 <code>test_case_03</code>。采用 <code>src/</code> 布局时，建议将产品代码作为已安装包导入，并在项目配置中设置测试路径，减少工作目录造成的导入差异。</p>
+      </section>
+      <section id="s4"><h2><span class="num">04</span>assert 与失败信息</h2>
+        <p>用 Python 原生 <code>assert</code> 清楚地写出期望：</p>
+        <pre><code>def test_discounted_price():
+    price = 100
+    discount = 0.2
+    final_price = price * (1 - discount)
+
+    assert final_price == 80
+    assert final_price &lt; price</code></pre>
+        <p>失败时 pytest 会重写断言表达式，展示参与比较的值。测试应验证使用者关心的行为，而不是照搬被测函数的内部算法。浮点数建议使用容差比较：</p>
+        <pre><code>assert actual == pytest.approx(0.3)</code></pre>
+      </section>
+      <section id="s5"><h2><span class="num">05</span>Fixture：组织前置条件和清理</h2>
+        <p>测试函数把 fixture 名称写作参数，pytest 会查找对应 fixture 并注入其返回值。Fixture 也可以依赖其他 fixture，组合出清晰的准备流程。</p>
+        <pre><code>import pytest
+
+
+@pytest.fixture
+def user_record():
+    return {"id": 7, "name": "Lin", "active": True}
+
+
+def test_user_is_active(user_record):
+    assert user_record["active"] is True</code></pre>
+        <h3>Fixture 的作用范围</h3>
+        <div class="table-wrap"><table><thead><tr><th>scope</th><th>生命周期</th><th>常见用途</th></tr></thead><tbody>
+          <tr><td><code>function</code>（默认）</td><td>每个测试函数</td><td>隔离性强的临时数据</td></tr><tr><td><code>class</code></td><td>一个测试类</td><td>类内共享且安全的状态</td></tr><tr><td><code>module</code></td><td>一个测试模块</td><td>模块级昂贵准备</td></tr><tr><td><code>package</code></td><td>一个包</td><td>包内共享资源</td></tr><tr><td><code>session</code></td><td>整次 pytest 会话</td><td>只读客户端、公共静态资源</td></tr>
+        </tbody></table></div>
+        <p>作用范围越大，创建次数越少，但共享状态和测试耦合风险越高。只有资源能安全共享时才扩大范围。</p>
+        <h3>用 yield 管理清理</h3>
+        <pre><code>@pytest.fixture
+def temp_connection():
+    connection = open_connection()
+    yield connection
+    connection.close()</code></pre>
+        <p><code>yield</code> 前准备资源，之后释放资源。多步初始化时，应让每一步准备都能对应清理，避免后续初始化失败留下半初始化资源。放在 <code>conftest.py</code> 的 fixture 可被该目录及子目录中的测试发现，无需显式导入；共享 fixture 应放在合适目录层级，职责保持清晰。</p>
+      </section>
+      <section id="s6"><h2><span class="num">06</span>参数化：用一份测试覆盖多组数据</h2>
+        <p>逻辑相同而输入不同的场景，可通过 <code>@pytest.mark.parametrize</code> 展开为独立用例：</p>
+        <pre><code>import pytest
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("hello", 5),
+        ("", 0),
+        ("你好", 2),
+    ],
+)
+def test_character_count(text, expected):
+    assert len(text) == expected</code></pre>
+        <p>每组参数独立报告，失败时能看出是哪组数据出错。边界值、非法输入和等价类都适合参数化。尽量给参数命名，避免把所有组合塞进一个测试；组合过多时按风险取舍，防止套件膨胀。Fixture 也可参数化；需要单独处理某条输入时，可用 <code>pytest.param(..., marks=...)</code>。</p>
+      </section>
+      <section id="s7"><h2><span class="num">07</span>Marker：给测试分类与筛选</h2>
+        <p>内置 marker 可以描述跳过条件或预期失败：</p>
+        <pre><code>import pytest
+
+
+@pytest.mark.skip(reason="功能尚未支持")
+def test_future_feature():
+    ...
+
+
+@pytest.mark.skipif(not is_windows(), reason="仅 Windows 支持")
+def test_windows_behavior():
+    ...
+
+
+@pytest.mark.xfail(reason="上游缺陷尚未修复")
+def test_known_bug():
+    ...</code></pre>
+        <p>项目也可以定义 <code>slow</code>、<code>integration</code> 等自有标记，再用 <code>pytest -m "not slow"</code> 按类型筛选。建议在配置文件注册自定义 marker，减少拼写错误并让意图清楚。<span class="tag">定期清理过期标记</span> 长期失败用例不应被无限期跳过或标成预期失败。</p>
+      </section>
+      <section id="s8"><h2><span class="num">08</span>常用内置能力</h2>
+        <h3>预期异常</h3><p>使用 <code>pytest.raises</code> 检查异常类型，必要时匹配消息：</p>
+        <pre><code>def test_invalid_age_is_rejected():
+    with pytest.raises(ValueError, match="age must be positive"):
+        create_profile(age=0)</code></pre>
+        <p>把操作放在 <code>with</code> 内最小范围，避免其它代码意外触发同一异常而误通过。</p>
+        <h3>临时文件与目录</h3><p><code>tmp_path</code> 为每个测试提供独立临时目录：</p>
+        <pre><code>def test_export_writes_json(tmp_path):
+    output = tmp_path / "report.json"
+    export_report(output)
+
+    assert output.exists()
+    assert '"status": "ok"' in output.read_text(encoding="utf-8")</code></pre>
+        <p>这样不必在仓库中维护和清理临时文件。</p>
+        <h3>Monkeypatch</h3><p>内置 <code>monkeypatch</code> fixture 可以临时替换属性、环境变量、字典项或工作目录，并在测试结束后恢复：</p>
+        <pre><code>def test_reads_api_key_from_environment(monkeypatch):
+    monkeypatch.setenv("API_KEY", "test-key")
+    assert load_api_key() == "test-key"</code></pre>
+        <p>优先替换系统边界（时间、网络、环境变量、文件系统入口），避免过度模拟内部细节。</p>
+      </section>
+      <section id="s9"><h2><span class="num">09</span>配置与命令行</h2>
+        <p>pytest 支持 <code>pyproject.toml</code>、<code>pytest.ini</code>、<code>tox.ini</code> 等配置。新项目可将设置集中在 <code>pyproject.toml</code>：</p>
+        <pre><code>[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+  "slow: 运行时间较长的测试",
+  "integration: 需要外部服务或多个组件的测试",
+]</code></pre>
+        <div class="table-wrap"><table><thead><tr><th>命令</th><th>用途</th></tr></thead><tbody>
+          <tr><td><code>pytest</code></td><td>运行发现到的测试</td></tr><tr><td><code>pytest -q</code></td><td>简洁输出</td></tr><tr><td><code>pytest -v</code></td><td>显示每个用例名称</td></tr><tr><td><code>pytest -x</code></td><td>第一次失败后停止</td></tr><tr><td><code>pytest --maxfail=2</code></td><td>最多遇到两次失败后停止</td></tr><tr><td><code>pytest -k "user and not slow"</code></td><td>按名称表达式筛选</td></tr><tr><td><code>pytest -m integration</code></td><td>按 marker 筛选</td></tr><tr><td><code>pytest --collect-only</code></td><td>只收集，不执行</td></tr><tr><td><code>pytest --durations=10</code></td><td>显示最慢的若干用例</td></tr><tr><td><code>pytest --tb=short</code></td><td>较短的回溯信息</td></tr>
+        </tbody></table></div>
+        <p>命令可以组合，例如 <code>pytest -q -m "not slow"</code>。CI 中应保留清晰的失败信息；<code>-x</code> 适合快速反馈，但不一定适合作为唯一完整回归运行方式。</p>
+      </section>
+      <section id="s10"><h2><span class="num">10</span>推荐项目结构与实践</h2>
+        <pre><code>my_project/
+├── pyproject.toml
+├── src/
+│   └── my_project/
+│       └── calculator.py
+└── tests/
+    ├── conftest.py
+    ├── unit/
+    │   └── test_calculator.py
+    └── integration/
+        └── test_api.py</code></pre>
+        <ol class="steps"><li><b>先测可观察行为。</b>输入、输出、状态变化和错误处理比私有实现细节稳定。</li><li><b>每个测试可以独立运行。</b>避免依赖执行顺序或共享可变数据。</li><li><b>让失败容易诊断。</b>测试名描述场景，断言定位明确，数据有代表性。</li><li><b>管理外部依赖。</b>隔离网络、数据库、时间等边界；集成测试使用可控环境。</li><li><b>合理分层。</b>快速单元测试和较慢集成测试分别组织，按需选择运行集合。</li><li><b>自动化运行。</b>在 CI 中安装项目依赖并运行测试，失败时保留日志。</li><li><b>按需添加插件。</b>插件扩展能力，也带来依赖和维护成本。</li></ol>
+      </section>
+      <section id="s11"><h2><span class="num">11</span>常见问题</h2>
+        <h3>为什么没有发现测试？</h3><p>检查文件名和函数名是否符合约定，确认运行目录及配置中的 <code>testpaths</code>，再运行 <code>pytest --collect-only -q</code> 查看收集结果。</p>
+        <h3>为什么本地能导入，CI 却报模块找不到？</h3><p>本地工作目录或 <code>PYTHONPATH</code> 可能偶然提供了导入路径。将项目规范安装到虚拟环境，统一 CI 工作目录和安装步骤，并检查 <code>src/</code> 布局及配置。</p>
+        <h3>为什么测试之间互相影响？</h3><p>常见原因是共享可变状态、数据库记录未清理、临时文件重名、环境变量未恢复，或测试依赖运行顺序。使用 function-scope fixture、独立数据标识和可靠清理修复根因。</p>
+        <h3>单元测试还是端到端测试？</h3><p>两者解决的问题不同。单元测试反馈快、定位明确；集成或端到端测试验证更多真实组件的协作，但成本和环境复杂度较高。按风险分层组合，避免期待一种测试覆盖所有风险。</p>
+      </section>
+      <section id="s12"><h2><span class="num">12</span>小结与官方资料</h2>
+        <p class="lead">pytest 从简单的 <code>assert</code> 起步，借助 Fixture 复用准备逻辑，用参数化覆盖输入空间，再通过标记和配置组织运行集合。框架提供结构与反馈；可靠的测试来自独立、明确、贴近用户行为的验证。</p>
+        <div class="sources"><h3>继续阅读</h3><ul>
+          <li><a href="https://docs.pytest.org/en/stable/getting-started.html">pytest 官方文档：Get Started</a></li>
+          <li><a href="https://docs.pytest.org/en/stable/explanation/fixtures.html">pytest 官方文档：Fixtures</a></li>
+          <li><a href="https://docs.pytest.org/en/stable/how-to/parametrize.html">pytest 官方文档：参数化</a></li>
+          <li><a href="https://docs.pytest.org/en/stable/how-to/usage.html">pytest 官方文档：命令行用法</a></li>
+          <li><a href="https://docs.pytest.org/en/stable/reference/customize.html">pytest 官方文档：配置选项</a></li>
+        </ul></div>
+        <a class="backtop" href="#top">↑ 回到页面顶部</a>
+      </section>
+    </main>
+  </div>
+  <footer class="footer">pytest 入门与实践 · Python 测试工程指南</footer>
+  <script>
+    const tocLinks = [...document.querySelectorAll('.toc a')];
+    const sections = tocLinks.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tocLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`));
+        }
+      });
+    }, { rootMargin: '-12% 0px -72% 0px' });
+    sections.forEach(section => observer.observe(section));
+  </script>
+</body>
+</html>
